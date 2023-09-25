@@ -1,16 +1,51 @@
 from django.shortcuts import render, redirect
 from .models import Kasvattaja, Lemmikki
+from django.contrib.auth import authenticate, login, logout
 
 def landingview(request):
     return render(request, 'landingpage.html')
 
-# Product view´s
+def loginview(request):
+    return render (request, "loginpage.html")
+
+
+# Login action
+def login_action(request):
+    user = request.POST['username']
+    passw = request.POST['password']
+    # Löytyykö kyseistä käyttäjää?
+    user = authenticate(username = user, password = passw)
+    #Jos löytyy:
+    if user:
+        # Kirjataan sisään
+        login(request, user)
+        # Tervehdystä varten context
+        context = {'name': user.first_name}
+        # Kutsutaan suoraan landingview.html
+        return render(request,'landingpage.html',context)
+    # Jos ei kyseistä käyttäjää löydy
+    else:
+        return render(request, 'loginerror.html')
+
+
+# Logout action
+def logout_action(request):
+    logout(request)
+    return render(request, 'loginpage.html')
+
+
+
+#Lemmikki view
 
 def lemmikkilistaview(request):
-    lemmikkilista = Lemmikki.objects.all()
-    kasvattajalista = Kasvattaja.objects.all()
-    context = {'lemmikit': lemmikkilista, 'kasvattajat': kasvattajalista}
-    return render (request,"lemmikkilista.html",context)
+    
+    if not request.user.is_authenticated:
+        return render(request, 'loginpage.html')
+    else:  
+      lemmikkilista = Lemmikki.objects.all()
+      kasvattajalista = Kasvattaja.objects.all()
+      context = {'lemmikit': lemmikkilista, 'kasvattajat': kasvattajalista}
+      return render (request,"lemmikkilista.html",context)
 
 
 def addlemmikki(request):
@@ -29,7 +64,7 @@ def confirmdeletelemmikki(request, id):
     return render (request,"confirmdellem.html",context)
 
 
-def deletelemmikki(request, id):
+def deletelemmikki(request, id): 
     Lemmikki.objects.get(id = id).delete()
     return redirect(lemmikkilistaview)
 
@@ -49,15 +84,19 @@ def edit_lemmikki_post(request, id):
 
 def lemmikit_filtered(request, id):
     lemmikkilista = Lemmikki.objects.all()
-    filteredlemmikit = lemmikkilista.filter(supplier = id)
+    filteredlemmikit = lemmikkilista.filter(kasvattaja = id)
     context = {'lemmikit': filteredlemmikit}
     return render (request,"lemmikkilista.html",context)
 
+#Kasvattaja view
 
 def kasvattajalistaview(request):
-    kasvattajalista = Kasvattaja.objects.all()
-    context = {'kasvattajat': kasvattajalista}
-    return render (request,"kasvattajalista.html",context)
+    if not request.user.is_authenticated:
+        return render(request, 'loginpage.html')
+    else:   
+      kasvattajalista = Kasvattaja.objects.all()
+      context = {'kasvattajat': kasvattajalista}
+      return render (request,"kasvattajalista.html",context)
 
 def addkasvattaja(request):
     a = request.POST['companyname']
@@ -81,8 +120,4 @@ def deletekasvattaja(request, id):
     return redirect(kasvattajalistaview)
 
 
-def searchkasvattaja(request):
-    search = request.POST['search']
-    filtered = Kasvattaja.objects.filter(companyname__icontains=search)
-    context = {'kasvattajat': filtered}
-    return render (request,"kasvattajalista.html",context)
+

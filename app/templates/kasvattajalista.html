@@ -6,30 +6,21 @@
 <div id="add-div"></div>
 <br />
 
-<h1 style="color: darkviolet">Kasvattajat</h1>
+<h1 style="color: rgb(120, 211, 0)">Kasvattajat</h1>
 
-<button id="add-btn" class="btn btn-success btn-sm" onclick="showaddform()">Lisää uusi kasvattaja</button>
+<button id="add-btn" class="btn btn-success btn-sm" onclick="showaddform()">Lisää uusi kasvattaja</button><br></br>
 
 
-        <form method="post" action="/search-kasvattaja/">
-
-            {%csrf_token %}
-            <input class="card-text" class="card-text" type="text" placeholder="search" name="search">
-
-            <input type="submit" value="Search" class="btn btn-success btn-sm" name="">
-        </form>
-  
-
-{% for s in kasvattaja %}
+{% for s in kasvattajat %}
 <div class="card" style="width: 50rem;">
     <div class="card-body">
         <h4 class="card-title">{{s.companyname}}</h4>
         <p class="card-text">Yhteyshenkilö: {{s.contactname}} | puhelin: {{s.phone}} | email: {{s.email}} </p>
         <p class="card-text">Osoite: {{s.address}} | Maa: {{s.country}}</p>
 
-        <a href="/edit-kasvattaja-get/{{s.id}}/" class="btn btn-primary">Muokkaa</a>
+        <!-- <a href="/edit-kasvattaja-get/{{s.id}}/" class="btn btn-primary">Muokkaa</a> -->
+        <a href="/lemmikit-by-kasvattaja/{{s.id}}/" class="btn btn-secondary">{{s.companyname}} : Varattavissa olevat</a>
         <a href="/confirm-delete-kasvattaja/{{s.id}}/" class="btn btn-danger">Poista</a>
-        <a href="/lemmikit-by-kasvattaja/{{s.id}}/" class="btn btn-secondary">{{s.companyname}} Lemmikit</a>
     </div>
 </div>
 
@@ -54,8 +45,8 @@
                 <input class="card-text" type="text" placeholder="email" name="email">
                 <input class="card-text" type="text" placeholder="country" name="country">
                 <br/>
-                <input type="submit" value="Confirm" class="btn btn-success btn-sm" name="">
-                <input type="submit" id="hide-btn" class="btn btn-secondary btn-sm" onclick="hideaddform()" value="Cancel" name="">
+                <input type="submit" value="Vahvista" class="btn btn-success btn-sm" name="">
+                <input type="submit" id="hide-btn" class="btn btn-secondary btn-sm" onclick="hideaddform()" value="Keskeytä" name="">
             </form>
         </div>
     </div>`
@@ -64,9 +55,9 @@
         document.getElementById("add-div").innerHTML = x
     }
 
-    // function hideaddform() {
-    //     document.getElementById("add-div").innerHTML = ""
-    // }
+    function hideaddform() {
+        document.getElementById("add-div").innerHTML = ""
+    }
 
 </script>
 

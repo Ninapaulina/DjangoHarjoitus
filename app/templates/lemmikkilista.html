@@ -7,9 +7,10 @@
 <div id="add-div"></div>
 <br />
 
-<h1>Lemmikit</h1>
+<h1 style="color: rgb(36, 14, 230)">Lemmikit</h1>
 
-<a onclick="showaddform()" class="btn btn-primary">Lisää uusi</a>
+
+<a onclick="showaddform()" class="btn btn-primary">Lisää uusi lemmikki</a>
 
 {% for p in lemmikit %}
 
@@ -17,13 +18,14 @@
     <div class="card-body">
         <h3 class="card-title">{{p.lemmikkirotu}} </h3>
         <h5 class="card-text">Kasvattaja: {{p.kasvattaja.companyname}}</h5>
-        unitprice: {{p.unitprice}}</p>
-        <p class="card-text" style="color: green;">Units in stock: {{p.unitsinstock}}</p>
-        <a href="/edit-lemmikki-get/{{p.id}}/" class="btn btn-primary">Muokkaa</a>
+        Myyntihinta: {{p.unitprice}}</p>
+        <p class="card-text" style="color: rgb(243, 8, 8);">Myynnissä: {{p.unitsinstock}}</p>
+        <!-- <a href="/edit-lemmikki-get/{{p.id}}/" class="btn btn-primary">Muokkaa</a> -->
 
+        <a href="/lemmikit-by-kasvattaja/{{p.kasvattaja.id}}/" class="btn btn-secondary">{{p.kasvattaja.companyname}} Lemmikit</a>
         <a href="/confirm-delete-lemmikki/{{p.id}}/" class="btn btn-danger">Poista</a>
+        
 
-        <a href="/lemmikit-by-kasvattaja/{{p.supplier.id}}/" class="btn btn-secondary">{{p.supplier.companyname}} Kaikki lemmikit</a>
 
     </div>
 </div>
@@ -43,15 +45,15 @@
 <script>
 
     let y = `
-    <h2 style="color: darkorange;">Please fill in form</h2>
+    <h2 style="color: darkorange;">Täytä lomakkeen tiedot</h2>
     
     <div class="card" style="width: 20rem;">
         <div class="card-body">
             <form method="post" action="/add-lemmikki/">
                 {%csrf_token %}
                 <input class="card-text" class="card-text" type="text" placeholder="lemmikkirotu" name="lemmikkirotu">
-                <input class="card-text" type="text" placeholder="unitprice" name="unitprice">
-                <input class="card-text" type="text" placeholder="units in stock or 0" name="unitsinstock">
+                <input class="card-text" type="text" placeholder="hinta" name="unitprice">
+                <input class="card-text" type="text" placeholder="saatavuus määrä" name="unitsinstock">
                 <br />
                 <label for="kasvattaja">Kasvattaja</label>
                 <select id="kasvattaja" name="kasvattaja">
